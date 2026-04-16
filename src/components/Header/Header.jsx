@@ -6,23 +6,23 @@ import {
   FaUserCircle,
   FaWhatsapp,
   FaBars,
-  FaTimes
+  FaTimes,
 } from "react-icons/fa";
 
 const Header = ({
   phone = "+91 99999 99999",
-  email = "yourmail@gmail.com"
+  email = "yourmail@gmail.com",
 }) => {
   const [offer, setOffer] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [activeIcon, setActiveIcon] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false); // ✅ sidebar state
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const offers = [
-      "🔥 50% OFF on all items!",
-      "🎉 Buy 1 Get 1 Free!",
-      "⚡ Limited Time Deal!",
+      "🔥 Flat 50% OFF on Cycling Products",
+      "🚴 Free Delivery Above ₹999",
+      "⚡ Limited Time Mega Deal",
+      "🎉 New Arrivals Available Now",
     ];
 
     let index = 0;
@@ -31,168 +31,170 @@ const Header = ({
     const interval = setInterval(() => {
       index = (index + 1) % offers.length;
       setOffer(offers[index]);
-    }, 3000);
+    }, 2500);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <header className="w-full shadow-lg">
+    <header className="w-full fixed top-0 left-0 z-50 shadow-xl">
 
-      {/* 🔝 Top Row */}
-      <div className="bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white text-sm px-4 md:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
+      {/* TOP BAR */}
+      <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-10 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
 
-        {/* Contact */}
-        <div className="flex flex-col md:flex-row gap-1 md:gap-6 font-medium">
-          <a href={`tel:${phone}`} className="hover:underline">
-            📞 {phone}
-          </a>
-          <a href={`mailto:${email}`} className="hover:underline">
-            ✉️ {email}
-          </a>
-        </div>
+          {/* LEFT */}
+          <div className="flex flex-col md:flex-row gap-2 md:gap-6 text-sm font-medium">
+            <a href={`tel:${phone}`} className="hover:text-cyan-300 transition">
+              📞 {phone}
+            </a>
 
-        {/* Offer */}
-        <div className="font-bold text-yellow-200 animate-pulse text-center">
-          {offer}
-        </div>
+            <a
+              href={`mailto:${email}`}
+              className="hover:text-cyan-300 transition"
+            >
+              ✉️ {email}
+            </a>
+          </div>
 
-        {/* Social Icons */}
-        <div className="flex gap-4 text-lg justify-center md:justify-end">
+          {/* CENTER */}
+          <div className="text-cyan-300 font-semibold animate-pulse text-sm md:text-base">
+            {offer}
+          </div>
 
-          <FaFacebookF
-            onClick={() => setActiveIcon(activeIcon === "facebook" ? "" : "facebook")}
-            className={`cursor-pointer transition ${
-              activeIcon === "facebook"
-                ? "text-blue-600 scale-110"
-                : "text-white hover:text-blue-300"
-            }`}
-          />
-
-          <FaTwitter
-            onClick={() => setActiveIcon(activeIcon === "twitter" ? "" : "twitter")}
-            className={`cursor-pointer transition ${
-              activeIcon === "twitter"
-                ? "text-sky-400 scale-110"
-                : "text-white hover:text-sky-300"
-            }`}
-          />
-
-          <FaInstagram
-            onClick={() => setActiveIcon(activeIcon === "instagram" ? "" : "instagram")}
-            className={`cursor-pointer transition ${
-              activeIcon === "instagram"
-                ? "text-pink-500 scale-110"
-                : "text-white hover:text-pink-300"
-            }`}
-          />
-
-          <FaWhatsapp
-            onClick={() => setActiveIcon(activeIcon === "whatsapp" ? "" : "whatsapp")}
-            className={`cursor-pointer transition ${
-              activeIcon === "whatsapp"
-                ? "text-green-500 scale-110"
-                : "text-white hover:text-green-300"
-            }`}
-          />
-
+          {/* RIGHT */}
+          <div className="flex gap-4 text-lg">
+            <FaFacebookF className="cursor-pointer hover:text-blue-400 hover:scale-110 transition" />
+            <FaTwitter className="cursor-pointer hover:text-sky-400 hover:scale-110 transition" />
+            <FaInstagram className="cursor-pointer hover:text-pink-400 hover:scale-110 transition" />
+            <FaWhatsapp className="cursor-pointer hover:text-green-400 hover:scale-110 transition" />
+          </div>
         </div>
       </div>
 
-      {/* 🔻 Bottom Row */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 md:px-8 py-5 bg-white/90 backdrop-blur-md border-b border-gray-200">
+      {/* NAVBAR */}
+      <div className="bg-white/95 backdrop-blur-md border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 md:px-10 h-[82px] flex items-center justify-between">
 
-        {/* Logo + Mobile Menu */}
-        <div className="flex items-center gap-4 w-full md:w-auto justify-between">
-          
-          {/* ☰ Menu Icon (mobile only) */}
-          <div className="md:hidden">
-            <FaBars
-              className="text-2xl cursor-pointer"
-              onClick={() => setMenuOpen(true)}
-            />
+          {/* LEFT SIDE LOGO */}
+          <div className="flex items-center gap-5">
+
+            {/* MOBILE MENU */}
+            <div className="md:hidden">
+              <FaBars
+                className="text-2xl cursor-pointer text-gray-800"
+                onClick={() => setMenuOpen(true)}
+              />
+            </div>
+
+            {/* LOGO */}
+            <div className="text-3xl font-extrabold tracking-wide cursor-pointer">
+              <span className="text-black">Cycle</span>
+              <span className="text-cyan-500">Zone</span>
+            </div>
+
           </div>
 
-          {/* Logo */}
-          <div className="text-xl md:text-3xl font-extrabold tracking-wide bg-gradient-to-r from-sky-500 to-blue-600 text-transparent bg-clip-text cursor-pointer">
-            MyShop
+          {/* RIGHT SIDE MENU */}
+          <div className="hidden md:flex items-center gap-7">
+
+            <a
+              href="#"
+              className="font-semibold text-gray-700 hover:text-cyan-500 transition relative group"
+            >
+              Home
+              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full"></span>
+            </a>
+
+            <a
+              href="#"
+              className="font-semibold text-gray-700 hover:text-cyan-500 transition relative group"
+            >
+              About
+              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full"></span>
+            </a>
+
+            <a
+              href="#"
+              className="font-semibold text-gray-700 hover:text-cyan-500 transition relative group"
+            >
+              Contact
+              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full"></span>
+            </a>
+
+            {/* BOOK NOW */}
+            <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2.5 rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-xl transition duration-300">
+              Book Now
+            </button>
+
+            {/* USER */}
+            <div className="relative">
+              <FaUserCircle
+                className="text-3xl text-gray-700 cursor-pointer hover:text-cyan-500 transition"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+              />
+
+              {showUserMenu && (
+                <div className="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-2xl border p-4">
+
+                  <p className="font-bold text-gray-800">John Doe</p>
+                  <p className="text-sm text-gray-500 mb-3">
+                    john@example.com
+                  </p>
+
+                  <button className="block w-full text-left py-2 hover:text-cyan-500">
+                    My Profile
+                  </button>
+
+                  <button className="block w-full text-left py-2 hover:text-cyan-500">
+                    Orders
+                  </button>
+
+                  <button className="block w-full text-left py-2 text-red-500">
+                    Logout
+                  </button>
+
+                </div>
+              )}
+            </div>
+
           </div>
-        </div>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex flex-wrap justify-end items-center gap-4 md:gap-8 relative">
-
-          <a href="#" className="font-medium hover:text-sky-600 transition">
-            Home
-          </a>
-
-          <a href="#" className="font-medium hover:text-sky-600 transition">
-            About
-          </a>
-          <a href="#" className="font-medium hover:text-sky-600 transition">
-            Shop
-          </a>
-
-          <a href="#" className="font-medium hover:text-sky-600 transition">
-            Contact
-          </a>
-
-          <button className="bg-gradient-to-r from-sky-500 to-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:scale-105 hover:shadow-lg transition duration-300">
-            Book Now
-          </button>
-
-          {/* User */}
-          <div className="relative">
-            <FaUserCircle
-              className="text-3xl cursor-pointer hover:text-sky-600 transition"
-              onClick={() => setShowUserMenu(!showUserMenu)}
-            />
-
-            {showUserMenu && (
-              <div className="absolute right-0 mt-3 w-52 bg-white shadow-xl rounded-xl p-4 border">
-                <p className="font-semibold">John Doe</p>
-                <p className="text-sm text-gray-500">john@example.com</p>
-
-                <hr className="my-2" />
-
-                <button className="block w-full text-left hover:text-sky-600 transition">
-                  Profile
-                </button>
-                <button className="block w-full text-left hover:text-sky-600 transition">
-                  Orders
-                </button>
-                <button className="block w-full text-left text-red-500">
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-
         </div>
       </div>
 
-      {/* 🔥 Mobile Sidebar */}
+      {/* MOBILE SIDEBAR */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform ${
+        className={`fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-2xl transform ${
           menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 z-50`}
+        } transition-transform duration-300`}
       >
-        {/* Close */}
-        <div className="flex justify-end p-4">
+        <div className="flex justify-between items-center p-5 border-b">
+          <h2 className="text-2xl font-bold">
+            <span className="text-black">Cycle</span>
+            <span className="text-cyan-500">Zone</span>
+          </h2>
+
           <FaTimes
             className="text-2xl cursor-pointer"
             onClick={() => setMenuOpen(false)}
           />
         </div>
 
-        {/* Menu Items */}
-        <div className="flex flex-col gap-6 p-6 text-lg">
+        <div className="flex flex-col p-6 gap-6 text-lg font-semibold text-gray-700">
 
-          <a href="#" onClick={() => setMenuOpen(false)}>Shop</a>
-          <a href="#" onClick={() => setMenuOpen(false)}>About</a>
-          <a href="#" onClick={() => setMenuOpen(false)}>Contact</a>
+          <a href="#" onClick={() => setMenuOpen(false)}>
+            Home
+          </a>
 
-          <button className="bg-gradient-to-r from-sky-500 to-blue-600 text-white px-4 py-2 rounded-lg">
+          <a href="#" onClick={() => setMenuOpen(false)}>
+            About
+          </a>
+
+          <a href="#" onClick={() => setMenuOpen(false)}>
+            Contact
+          </a>
+
+          <button className="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-xl shadow-lg">
             Book Now
           </button>
 

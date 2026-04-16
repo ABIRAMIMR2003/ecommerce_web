@@ -1,24 +1,22 @@
 import React from "react";
 import Header from "./components/Header/Header";
+import HomePage from "./components/HomePage";
 import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
     <>
-      <Header 
+      <Header
         phone="+91 99999 99999"
         email="yourmail@gmail.com"
       />
 
-      {/* Main Content */}
-      <main className="p-6 text-center min-h-screen">
-        <h1 className="text-2xl font-bold">Welcome to MyShop</h1>
-        <p className="mt-2 text-gray-600">
-          Your ecommerce homepage starts here.
-        </p>
-      </main>
+      {/* Home Page Content */}
+      <HomePage />
+
       <Footer />
     </>
   );
 }
+
 export default App;
