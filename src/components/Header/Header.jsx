@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FaFacebookF,
   FaTwitter,
@@ -7,6 +8,8 @@ import {
   FaWhatsapp,
   FaBars,
   FaTimes,
+  FaEnvelope,
+  FaLock,
 } from "react-icons/fa";
 
 const Header = ({
@@ -14,8 +17,8 @@ const Header = ({
   email = "yourmail@gmail.com",
 }) => {
   const [offer, setOffer] = useState("");
-  const [showUserMenu, setShowUserMenu] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     const offers = [
@@ -36,172 +39,270 @@ const Header = ({
     return () => clearInterval(interval);
   }, []);
 
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Shop", path: "/shop" },
+    { name: "Contact", path: "/contact" },
+  ];
+
   return (
-    <header className="w-full fixed top-0 left-0 z-50 shadow-xl">
+    <>
+      <header className="w-full fixed top-0 left-0 z-50 shadow-2xl">
 
-      {/* TOP BAR */}
-      <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 md:px-10 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+        {/* TOP BAR */}
+        <div className="bg-gradient-to-r from-slate-950 via-cyan-950 to-slate-900 text-white border-b border-cyan-700/30">
+          <div className="max-w-7xl mx-auto px-4 md:px-10 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
 
-          {/* LEFT */}
-          <div className="flex flex-col md:flex-row gap-2 md:gap-6 text-sm font-medium">
-            <a href={`tel:${phone}`} className="hover:text-cyan-300 transition">
-              📞 {phone}
-            </a>
+            {/* LEFT */}
+            <div className="flex flex-col md:flex-row gap-2 md:gap-6 text-sm font-medium">
+              <a
+                href={`tel:${phone}`}
+                className="hover:text-cyan-300 duration-300"
+              >
+                📞 {phone}
+              </a>
 
-            <a
-              href={`mailto:${email}`}
-              className="hover:text-cyan-300 transition"
-            >
-              ✉️ {email}
-            </a>
-          </div>
+              <a
+                href={`mailto:${email}`}
+                className="hover:text-cyan-300 duration-300"
+              >
+                ✉️ {email}
+              </a>
+            </div>
 
-          {/* CENTER */}
-          <div className="text-cyan-300 font-semibold animate-pulse text-sm md:text-base">
-            {offer}
-          </div>
+            {/* CENTER */}
+            <div className="text-cyan-300 font-semibold tracking-wide animate-pulse text-sm md:text-base">
+              {offer}
+            </div>
 
-          {/* RIGHT */}
-          <div className="flex gap-4 text-lg">
-            <FaFacebookF className="cursor-pointer hover:text-blue-400 hover:scale-110 transition" />
-            <FaTwitter className="cursor-pointer hover:text-sky-400 hover:scale-110 transition" />
-            <FaInstagram className="cursor-pointer hover:text-pink-400 hover:scale-110 transition" />
-            <FaWhatsapp className="cursor-pointer hover:text-green-400 hover:scale-110 transition" />
+            {/* RIGHT */}
+            <div className="flex gap-3 text-sm">
+
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-blue-500 duration-300 cursor-pointer">
+                <FaFacebookF />
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-sky-400 duration-300 cursor-pointer">
+                <FaTwitter />
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-pink-500 duration-300 cursor-pointer">
+                <FaInstagram />
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-green-500 duration-300 cursor-pointer">
+                <FaWhatsapp />
+              </div>
+
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* NAVBAR */}
-      <div className="bg-white/95 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 md:px-10 h-[82px] flex items-center justify-between">
+        {/* NAVBAR */}
+        <div className="bg-white/90 backdrop-blur-xl border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 md:px-10 h-[82px] flex items-center justify-between">
 
-          {/* LEFT SIDE LOGO */}
-          <div className="flex items-center gap-5">
+            {/* LEFT */}
+            <div className="flex items-center gap-5">
 
-            {/* MOBILE MENU */}
-            <div className="md:hidden">
-              <FaBars
-                className="text-2xl cursor-pointer text-gray-800"
-                onClick={() => setMenuOpen(true)}
-              />
+              {/* MOBILE MENU */}
+              <div className="md:hidden">
+                <FaBars
+                  className="text-2xl cursor-pointer text-gray-800"
+                  onClick={() => setMenuOpen(true)}
+                />
+              </div>
+
+              {/* LOGO */}
+              <Link to="/" className="cursor-pointer leading-tight">
+                <h1 className="text-3xl font-black tracking-wide">
+                  <span className="text-slate-900">Cycle</span>
+                  <span className="text-cyan-500">Zone</span>
+                </h1>
+
+                <p className="text-[11px] text-gray-500 font-medium tracking-[3px] uppercase">
+                  Ride Better
+                </p>
+              </Link>
+
             </div>
 
-            {/* LOGO */}
-            <div className="text-3xl font-extrabold tracking-wide cursor-pointer">
+            {/* RIGHT MENU */}
+            <div className="hidden md:flex items-center gap-7">
+
+              {navLinks.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  className="relative font-semibold text-gray-700 hover:text-cyan-500 transition group"
+                >
+                  {item.name}
+
+                  <span className="absolute left-0 -bottom-2 w-0 h-[2px] bg-cyan-500 transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              ))}
+
+              {/* BOOK NOW */}
+              <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-cyan-300/50 hover:scale-105 duration-300">
+                Book Now
+              </button>
+
+              {/* USER */}
+              <button
+                onClick={() => setShowLogin(true)}
+                className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-2xl text-gray-700 hover:bg-cyan-500 hover:text-white duration-300 shadow-md"
+              >
+                <FaUserCircle />
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+        {/* MOBILE SIDEBAR */}
+        <div
+          className={`fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-2xl transform ${
+            menuOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300`}
+        >
+          <div className="flex justify-between items-center p-5 border-b">
+            <Link
+              to="/"
+              onClick={() => setMenuOpen(false)}
+              className="text-2xl font-bold"
+            >
               <span className="text-black">Cycle</span>
               <span className="text-cyan-500">Zone</span>
-            </div>
+            </Link>
 
+            <FaTimes
+              className="text-2xl cursor-pointer"
+              onClick={() => setMenuOpen(false)}
+            />
           </div>
 
-          {/* RIGHT SIDE MENU */}
-          <div className="hidden md:flex items-center gap-7">
+          <div className="flex flex-col p-6 gap-5 text-lg font-semibold text-gray-700">
 
-            <a
-              href="#"
-              className="font-semibold text-gray-700 hover:text-cyan-500 transition relative group"
-            >
+            <Link to="/" onClick={() => setMenuOpen(false)}>
               Home
-              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full"></span>
-            </a>
+            </Link>
 
-            <a
-              href="#"
-              className="font-semibold text-gray-700 hover:text-cyan-500 transition relative group"
-            >
+            <Link to="/about" onClick={() => setMenuOpen(false)}>
               About
-              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full"></span>
-            </a>
+            </Link>
+            <Link to="/contact" onClick={() => setMenuOpen(false)}>
+              Shop
+            </Link>
 
-            <a
-              href="#"
-              className="font-semibold text-gray-700 hover:text-cyan-500 transition relative group"
-            >
+            <Link to="/contact" onClick={() => setMenuOpen(false)}>
               Contact
-              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full"></span>
-            </a>
+            </Link>
 
-            {/* BOOK NOW */}
-            <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2.5 rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-xl transition duration-300">
+            <button className="mt-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-xl shadow-lg">
               Book Now
             </button>
 
-            {/* USER */}
-            <div className="relative">
-              <FaUserCircle
-                className="text-3xl text-gray-700 cursor-pointer hover:text-cyan-500 transition"
-                onClick={() => setShowUserMenu(!showUserMenu)}
-              />
-
-              {showUserMenu && (
-                <div className="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-2xl border p-4">
-
-                  <p className="font-bold text-gray-800">John Doe</p>
-                  <p className="text-sm text-gray-500 mb-3">
-                    john@example.com
-                  </p>
-
-                  <button className="block w-full text-left py-2 hover:text-cyan-500">
-                    My Profile
-                  </button>
-
-                  <button className="block w-full text-left py-2 hover:text-cyan-500">
-                    Orders
-                  </button>
-
-                  <button className="block w-full text-left py-2 text-red-500">
-                    Logout
-                  </button>
-
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => {
+                setShowLogin(true);
+                setMenuOpen(false);
+              }}
+              className="border border-cyan-500 text-cyan-600 py-3 rounded-xl font-semibold"
+            >
+              Login
+            </button>
 
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* MOBILE SIDEBAR */}
-      <div
-        className={`fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-2xl transform ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300`}
-      >
-        <div className="flex justify-between items-center p-5 border-b">
-          <h2 className="text-2xl font-bold">
-            <span className="text-black">Cycle</span>
-            <span className="text-cyan-500">Zone</span>
-          </h2>
+      {/* LOGIN POPUP */}
+      {showLogin && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center px-4">
 
-          <FaTimes
-            className="text-2xl cursor-pointer"
-            onClick={() => setMenuOpen(false)}
-          />
+          <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
+
+            {/* TOP */}
+            <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-8 text-white text-center">
+              <h2 className="text-3xl font-bold">Welcome Back</h2>
+
+              <p className="text-sm text-cyan-100 mt-2">
+                Login to continue shopping
+              </p>
+            </div>
+
+            {/* CLOSE */}
+            <button
+              onClick={() => setShowLogin(false)}
+              className="absolute top-4 right-4 text-white hover:rotate-90 duration-300"
+            >
+              <FaTimes size={22} />
+            </button>
+
+            {/* FORM */}
+            <div className="p-8">
+
+              {/* EMAIL */}
+              <div className="mb-5">
+                <label className="text-sm font-semibold text-gray-700">
+                  Email Address
+                </label>
+
+                <div className="mt-2 flex items-center border border-gray-300 rounded-xl px-4 focus-within:border-cyan-500">
+                  <FaEnvelope className="text-gray-400" />
+
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="w-full px-3 py-3 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* PASSWORD */}
+              <div className="mb-3">
+                <label className="text-sm font-semibold text-gray-700">
+                  Password
+                </label>
+
+                <div className="mt-2 flex items-center border border-gray-300 rounded-xl px-4 focus-within:border-cyan-500">
+                  <FaLock className="text-gray-400" />
+
+                  <input
+                    type="password"
+                    placeholder="Enter your password"
+                    className="w-full px-3 py-3 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="text-right mb-6">
+                <a
+                  href="#"
+                  className="text-sm text-cyan-600 hover:underline"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+
+              {/* BUTTON */}
+              <button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:scale-[1.02] duration-300">
+                Login
+              </button>
+
+              <p className="text-center text-sm text-gray-500 mt-5">
+                Don’t have an account?{" "}
+                <span className="text-cyan-600 font-semibold cursor-pointer">
+                  Register
+                </span>
+              </p>
+
+            </div>
+          </div>
         </div>
-
-        <div className="flex flex-col p-6 gap-6 text-lg font-semibold text-gray-700">
-
-          <a href="#" onClick={() => setMenuOpen(false)}>
-            Home
-          </a>
-
-          <a href="#" onClick={() => setMenuOpen(false)}>
-            About
-          </a>
-
-          <a href="#" onClick={() => setMenuOpen(false)}>
-            Contact
-          </a>
-
-          <button className="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-xl shadow-lg">
-            Book Now
-          </button>
-
-        </div>
-      </div>
-
-    </header>
+      )}
+    </>
   );
 };
 
