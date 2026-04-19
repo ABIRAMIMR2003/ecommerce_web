@@ -191,7 +191,7 @@ const Header = ({
             <Link to="/about" onClick={() => setMenuOpen(false)}>
               About
             </Link>
-            <Link to="/contact" onClick={() => setMenuOpen(false)}>
+            <Link to="/shop" onClick={() => setMenuOpen(false)}>
               Shop
             </Link>
 
@@ -241,7 +241,7 @@ const Header = ({
             </button>
 
             {/* FORM */}
-            <div className="p-8">
+            <form className="p-8" autoComplete="off">
 
               {/* EMAIL */}
               <div className="mb-5">
@@ -254,6 +254,8 @@ const Header = ({
 
                   <input
                     type="email"
+                    name="email"
+                    autoComplete="off"
                     placeholder="Enter your email"
                     className="w-full px-3 py-3 outline-none"
                   />
@@ -271,6 +273,8 @@ const Header = ({
 
                   <input
                     type="password"
+                    name="password"
+                    autoComplete="new-password"
                     placeholder="Enter your password"
                     className="w-full px-3 py-3 outline-none"
                   />
@@ -287,7 +291,7 @@ const Header = ({
               </div>
 
               {/* BUTTON */}
-              <button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:scale-[1.02] duration-300">
+              <button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:scale-[1.02] duration-300">
                 Login
               </button>
 
@@ -298,7 +302,7 @@ const Header = ({
                 </span>
               </p>
 
-            </div>
+            </form>
           </div>
         </div>
       )}

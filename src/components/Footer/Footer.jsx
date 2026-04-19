@@ -9,7 +9,6 @@ import {
   FaWhatsapp,
   FaArrowRight,
 } from "react-icons/fa";
-
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950 text-white pt-16 pb-6 px-6 md:px-12">
@@ -48,8 +47,8 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
-        {/* QUICK LINKS */}
+              
+          {/* QUICK LINKS */}
         <div>
           <h2 className="text-xl font-bold mb-5 text-cyan-400">
             Quick Links
@@ -67,6 +66,7 @@ const Footer = () => {
             ))}
           </ul>
         </div>
+        
 
         {/* CATEGORIES */}
         <div>
