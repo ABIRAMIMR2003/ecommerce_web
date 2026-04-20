@@ -1,102 +1,87 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaStar,
   FaSearch,
   FaArrowLeft,
-  FaCheckCircle,
   FaMinus,
   FaPlus,
   FaShoppingCart,
   FaBolt,
   FaBicycle,
+  FaHeart,
+  FaEye,
 } from "react-icons/fa";
 
 function ShopPage() {
-  const products = [
+  const navigate = useNavigate();
+
+  const [products, setProducts] = useState([
     {
       id: 1,
       name: "Mountain Beast X1",
-      brand: "CycleZone",
-      stock: "In Stock",
-      material: "Alloy Steel",
-      color: "Black / Blue",
-      weight: "14 KG",
-      warranty: "1 Year",
       price: 24999,
       oldPrice: 29999,
       category: "Mountain Bikes",
-      rating: 4.8,
-      reviews: 124,
+      rating: 0,
+      reviews: 126,
+      liked: false,
       description:
-        "Powerful mountain cycle with premium suspension, smooth riding comfort and strong alloy frame.",
+        "Premium mountain cycle with suspension and strong alloy frame.",
       images: [
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1000",
         "https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=1000",
-        "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1000",
       ],
     },
+
     {
       id: 2,
       name: "Road Speed Pro",
-      brand: "Velocity",
-      stock: "In Stock",
-      material: "Carbon Fiber",
-      color: "Red",
-      weight: "10 KG",
-      warranty: "2 Years",
-      price: 31999,
-      oldPrice: 36999,
+      price: 32999,
+      oldPrice: 37999,
       category: "Road Bikes",
-      rating: 4.9,
-      reviews: 210,
+      rating: 0,
+      reviews: 98,
+      liked: false,
       description:
-        "Lightweight road bike designed for speed, racing and long rides.",
+        "Ultra lightweight speed bike for long rides and racing.",
       images: [
         "https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?w=1000",
-        "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1000",
       ],
     },
+
     {
       id: 3,
-      name: "Helmet Pro Shield",
-      brand: "RideSafe",
-      stock: "In Stock",
-      material: "ABS Shell",
-      color: "Black",
-      weight: "800 GM",
-      warranty: "6 Months",
+      name: "Helmet Shield X",
       price: 2999,
       oldPrice: 3999,
       category: "Helmets",
-      rating: 4.7,
-      reviews: 89,
+      rating: 0,
+      reviews: 212,
+      liked: false,
       description:
-        "Premium safety helmet with airflow design and inner comfort padding.",
+        "Safety helmet with airflow system and premium comfort.",
       images: [
         "https://images.unsplash.com/photo-1571333250630-f0230c320b6d?w=1000",
       ],
     },
+
     {
       id: 4,
-      name: "Electric Urban Ride",
-      brand: "VoltBike",
-      stock: "In Stock",
-      material: "Aluminium",
-      color: "Silver",
-      weight: "19 KG",
-      warranty: "2 Years",
-      price: 54999,
+      name: "Electric Ride Pro",
+      price: 55999,
       oldPrice: 61999,
       category: "Electric Bikes",
-      rating: 4.9,
-      reviews: 310,
+      rating: 0,
+      reviews: 87,
+      liked: false,
       description:
-        "Modern electric cycle with smart battery performance and city riding comfort.",
+        "Modern electric cycle with smart battery performance.",
       images: [
         "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1000",
       ],
     },
-  ];
+  ]);
 
   const categories = [
     "All",
@@ -107,10 +92,46 @@ function ShopPage() {
   ];
 
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCategory, setSelectedCategory] =
+    useState("All");
+
+  const [selectedProduct, setSelectedProduct] =
+    useState(null);
+
   const [mainImage, setMainImage] = useState("");
   const [qty, setQty] = useState(1);
+
+  /* LIKE BUTTON */
+  const toggleLike = (id) => {
+    setProducts((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              liked: !item.liked,
+            }
+          : item
+      )
+    );
+  };
+
+  /* STAR RATE */
+  const giveStar = (id, star) => {
+    setProducts((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              rating: star,
+            }
+          : item
+      )
+    );
+  };
+
+  const likedProducts = products.filter(
+    (item) => item.liked
+  );
 
   const filteredProducts = products.filter((item) => {
     const matchSearch = item.name
@@ -124,49 +145,29 @@ function ShopPage() {
     return matchSearch && matchCategory;
   });
 
-  const renderStars = (rating) => {
-    const full = Math.round(rating);
+  const renderStars = (id, rating) => {
     return [...Array(5)].map((_, i) => (
       <FaStar
         key={i}
-        className={
-          i < full ? "text-yellow-400" : "text-gray-300"
-        }
+        onClick={() => giveStar(id, i + 1)}
+        className={`cursor-pointer text-xl ${
+          i < rating
+            ? "text-yellow-400"
+            : "text-gray-300"
+        }`}
       />
     ));
   };
 
-  /* ================================================= */
-  /* PRODUCT DETAIL PAGE */
-  /* ================================================= */
-
+  /* PRODUCT DETAILS PAGE */
   if (selectedProduct) {
-    const relatedProducts = products.filter(
-      (item) => item.id !== selectedProduct.id
-    );
-
-    const totalPrice = selectedProduct.price * qty;
-    const totalOldPrice = selectedProduct.oldPrice * qty;
-
-    const dynamicRating = (
-      selectedProduct.rating +
-      qty * 0.02
-    ).toFixed(1);
-
-    const dynamicReviews =
-      selectedProduct.reviews + qty * 4;
-
     return (
-      <div className="bg-gray-50 min-h-screen pt-32 pb-20 px-4">
+      <div className="bg-slate-50 min-h-screen pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
 
-          {/* BACK */}
           <button
-            onClick={() => {
-              setSelectedProduct(null);
-              setQty(1);
-            }}
-            className="bg-white px-5 py-3 rounded-2xl shadow mb-8 flex items-center gap-2"
+            onClick={() => setSelectedProduct(null)}
+            className="mb-8 bg-white px-6 py-3 rounded-2xl shadow-lg flex items-center gap-3 font-bold"
           >
             <FaArrowLeft />
             Back
@@ -176,249 +177,175 @@ function ShopPage() {
 
             {/* LEFT */}
             <div>
-              <div className="bg-white rounded-3xl shadow p-5">
+              <div className="bg-white p-5 rounded-3xl shadow-xl">
                 <img
-                  src={mainImage || selectedProduct.images[0]}
+                  src={
+                    mainImage ||
+                    selectedProduct.images[0]
+                  }
                   alt=""
-                  className="w-full h-[470px] rounded-3xl object-cover"
+                  className="w-full h-[500px] object-cover rounded-3xl"
                 />
               </div>
 
               <div className="flex gap-4 mt-5 flex-wrap">
-                {selectedProduct.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt=""
-                    onClick={() => setMainImage(img)}
-                    className="w-24 h-24 rounded-2xl object-cover cursor-pointer border-2 border-cyan-500"
-                  />
-                ))}
+                {selectedProduct.images.map(
+                  (img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      alt=""
+                      onClick={() =>
+                        setMainImage(img)
+                      }
+                      className="w-24 h-24 rounded-2xl object-cover cursor-pointer border-2 border-cyan-500"
+                    />
+                  )
+                )}
               </div>
             </div>
 
             {/* RIGHT */}
-            <div className="bg-white rounded-3xl shadow p-8">
+            <div className="bg-white rounded-3xl shadow-xl p-8">
 
               <p className="text-cyan-500 font-bold mb-2">
                 {selectedProduct.category}
               </p>
 
-              <h1 className="text-4xl font-black mb-4">
+              <h1 className="text-5xl font-black mb-5">
                 {selectedProduct.name}
               </h1>
 
-              {/* Rating */}
-              <div className="flex items-center gap-2 mb-5">
-                {renderStars(dynamicRating)}
-                <span className="font-semibold">
-                  {dynamicRating} ({dynamicReviews} Reviews)
+              <div className="flex gap-2 mb-5">
+                {renderStars(
+                  selectedProduct.id,
+                  selectedProduct.rating
+                )}
+              </div>
+
+              <div className="mb-6">
+                <span className="text-5xl font-black text-cyan-600">
+                  ₹
+                  {selectedProduct.price *
+                    qty}
                 </span>
               </div>
 
-              {/* Price */}
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-4xl font-black text-cyan-600">
-                  ₹{totalPrice}
-                </span>
-
-                <span className="line-through text-gray-400 text-xl">
-                  ₹{totalOldPrice}
-                </span>
-              </div>
-
-              {/* Description */}
-              <p className="text-gray-600 leading-8 mb-8">
-                {selectedProduct.description}
+              <p className="text-gray-600 mb-8">
+                {
+                  selectedProduct.description
+                }
               </p>
 
               {/* QUANTITY */}
               <div className="mb-8">
-                <h3 className="font-bold mb-3 text-lg">
+                <h3 className="font-bold mb-4">
                   Quantity
                 </h3>
 
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() =>
-                      qty > 1 && setQty(qty - 1)
+                      qty > 1 &&
+                      setQty(qty - 1)
                     }
-                    className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center"
+                    className="w-12 h-12 rounded-full bg-gray-100"
                   >
-                    <FaMinus />
+                    <FaMinus className="mx-auto" />
                   </button>
 
-                  <span className="text-2xl font-bold w-10 text-center">
+                  <span className="text-2xl font-bold">
                     {qty}
                   </span>
 
                   <button
-                    onClick={() => setQty(qty + 1)}
-                    className="w-12 h-12 rounded-full bg-cyan-500 text-white flex items-center justify-center"
+                    onClick={() =>
+                      setQty(qty + 1)
+                    }
+                    className="w-12 h-12 rounded-full bg-cyan-500 text-white"
                   >
-                    <FaPlus />
+                    <FaPlus className="mx-auto" />
                   </button>
                 </div>
               </div>
 
               {/* BUTTONS */}
-              <div className="grid sm:grid-cols-2 gap-4 mb-10">
-                <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 rounded-2xl font-bold">
+              <div className="grid sm:grid-cols-2 gap-4">
+
+                <button
+                  onClick={() =>
+                    navigate("/cart", {
+                      state: {
+                        product: {
+                          name: selectedProduct.name,
+                          price:
+                            selectedProduct.price,
+                          image:
+                            mainImage ||
+                            selectedProduct.images[0],
+                          qty: qty,
+                        },
+                      },
+                    })
+                  }
+                  className="py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600"
+                >
                   Add To Cart
                 </button>
 
-                <button className="bg-slate-900 text-white py-4 rounded-2xl font-bold">
-                  Continue Order
-                </button>
-              </div>
-
-              {/* HIGHLIGHTS */}
-              <div className="border-t pt-8">
-                <h3 className="text-2xl font-bold mb-5">
-                  Product Highlights
-                </h3>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {[
-                    ["Brand", selectedProduct.brand],
-                    ["Stock", selectedProduct.stock],
-                    ["Material", selectedProduct.material],
-                    ["Color", selectedProduct.color],
-                    ["Weight", selectedProduct.weight],
-                    ["Warranty", selectedProduct.warranty],
-                    ["Quantity", qty + " Unit"],
-                    ["Total", "₹" + totalPrice],
-                  ].map((item, i) => (
-                    <div
-                      key={i}
-                      className="bg-gray-50 rounded-2xl p-4 shadow-sm"
-                    >
-                      <p className="text-gray-500 font-semibold mb-1">
-                        {item[0]}
-                      </p>
-                      <p className="font-bold text-lg">
-                        {item[1]}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* CUSTOMER REVIEWS */}
-              <div className="mt-10 border-t pt-8">
-                <h3 className="text-2xl font-bold mb-4">
-                  Customer Ratings
-                </h3>
-
-                {[
-                  "Excellent Quality",
-                  "Very Smooth Ride",
-                  "Worth the Price",
-                ].map((txt, i) => (
-                  <div
-                    key={i}
-                    className="bg-gray-100 rounded-2xl p-4 mb-3 flex items-center gap-2"
-                  >
-                    {renderStars(5)}
-                    <span>{txt}</span>
-                  </div>
-                ))}
-              </div>
-
-            </div>
-          </div>
-
-          {/* RELATED PRODUCTS */}
-          <div className="mt-16">
-            <h2 className="text-3xl font-black mb-8">
-              You Might Also Like
-            </h2>
-
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-3xl shadow-lg overflow-hidden hover:-translate-y-2 duration-300"
+                <button
+                  onClick={() =>
+                    toggleLike(
+                      selectedProduct.id
+                    )
+                  }
+                  className="py-4 rounded-2xl font-bold bg-pink-500 text-white"
                 >
-                  <img
-                    src={item.images[0]}
-                    alt=""
-                    className="w-full h-52 object-cover"
-                  />
+                  {selectedProduct.liked
+                    ? "Liked"
+                    : "Like"}
+                </button>
 
-                  <div className="p-5">
-                    <h3 className="font-bold text-lg mb-2">
-                      {item.name}
-                    </h3>
+              </div>
 
-                    <p className="text-cyan-600 font-bold mb-4">
-                      ₹{item.price}
-                    </p>
-
-                    <button
-                      onClick={() => {
-                        setSelectedProduct(item);
-                        setMainImage(item.images[0]);
-                        setQty(1);
-                      }}
-                      className="w-full bg-cyan-500 text-white py-2 rounded-xl"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
-
         </div>
       </div>
     );
   }
 
-  /* ================================================= */
-  /* SHOP PAGE */
-  /* ================================================= */
-
+  /* MAIN SHOP PAGE */
   return (
-    <div className="bg-gray-50 min-h-screen pt-32">
+    <div className="bg-slate-50 min-h-screen pt-32">
 
-      {/* TOP BANNER IMAGE */}
-      <section className="max-w-7xl mx-auto px-4 pb-10">
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+      {/* LIKED PRODUCTS TOP */}
+      {likedProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 pb-6">
+          <div className="bg-white rounded-3xl shadow-xl p-5">
 
-          <img
-            src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1400"
-            alt=""
-            className="w-full h-[420px] object-cover"
-          />
+            <h2 className="text-2xl font-black mb-4 text-pink-500">
+              ❤️ Liked Products
+            </h2>
 
-          <div className="absolute inset-0 bg-black/50 flex items-center">
-            <div className="p-10 text-white max-w-xl">
-              <p className="uppercase tracking-widest text-cyan-300 font-bold mb-3">
-                Premium Collection
-              </p>
-
-              <h1 className="text-5xl font-black leading-tight mb-5">
-                Shop Your Dream Cycle
-              </h1>
-
-              <p className="text-lg text-gray-200 mb-6">
-                Explore premium bikes, helmets &
-                accessories with stylish designs.
-              </p>
-
-              <button className="bg-cyan-500 px-8 py-3 rounded-full font-bold">
-                Explore Now
-              </button>
+            <div className="flex flex-wrap gap-3">
+              {likedProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="px-4 py-2 bg-pink-100 rounded-full font-semibold"
+                >
+                  {item.name}
+                </div>
+              ))}
             </div>
+
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* SEARCH */}
       <section className="max-w-7xl mx-auto px-4 pb-8">
-        <div className="bg-white rounded-3xl shadow-lg p-5">
+        <div className="bg-white rounded-3xl shadow-xl p-5">
 
           <div className="flex items-center gap-3 border rounded-2xl px-4 py-3 mb-5">
             <FaSearch className="text-gray-400" />
@@ -434,7 +361,7 @@ function ShopPage() {
             />
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex gap-3 flex-wrap">
             {categories.map((item, i) => (
               <button
                 key={i}
@@ -451,42 +378,92 @@ function ShopPage() {
               </button>
             ))}
           </div>
+
         </div>
       </section>
 
       {/* PRODUCTS */}
       <section className="max-w-7xl mx-auto px-4 pb-20">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
           {filteredProducts.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-3xl shadow-lg overflow-hidden hover:-translate-y-2 duration-300"
+              className="bg-white rounded-3xl shadow-xl overflow-hidden"
             >
-              <img
-                src={item.images[0]}
-                alt=""
-                className="w-full h-64 object-cover"
-              />
+              <div className="relative">
+
+                <img
+                  src={item.images[0]}
+                  alt=""
+                  className="w-full h-64 object-cover"
+                />
+
+                <div className="absolute top-3 right-3 flex flex-col gap-3">
+
+                  <button
+                    onClick={() =>
+                      toggleLike(item.id)
+                    }
+                    className="bg-white p-3 rounded-full shadow"
+                  >
+                    <FaHeart
+                      className={
+                        item.liked
+                          ? "text-red-500"
+                          : "text-gray-600"
+                      }
+                    />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedProduct(item);
+                      setMainImage(
+                        item.images[0]
+                      );
+                      setQty(1);
+                    }}
+                    className="bg-white p-3 rounded-full shadow"
+                  >
+                    <FaEye />
+                  </button>
+
+                </div>
+              </div>
 
               <div className="p-6">
 
-                <div className="flex gap-1 mb-3">
-                  {renderStars(item.rating)}
+                {/* STAR DYNAMIC */}
+                <div className="flex gap-1 mb-2">
+                  {renderStars(
+                    item.id,
+                    item.rating
+                  )}
                 </div>
+
+                <p className="text-sm text-gray-500 mb-2">
+                  {item.reviews} Reviews
+                </p>
 
                 <h3 className="text-xl font-bold mb-2">
                   {item.name}
                 </h3>
 
-                <p className="text-cyan-600 text-2xl font-black mb-4">
+                <p className="text-gray-500 mb-3">
+                  {item.category}
+                </p>
+
+                <p className="text-cyan-600 text-2xl font-black mb-5">
                   ₹{item.price}
                 </p>
 
                 <button
                   onClick={() => {
                     setSelectedProduct(item);
-                    setMainImage(item.images[0]);
+                    setMainImage(
+                      item.images[0]
+                    );
                     setQty(1);
                   }}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-2xl font-bold"
@@ -541,4 +518,3 @@ function ShopPage() {
 }
 
 export default ShopPage;
-
