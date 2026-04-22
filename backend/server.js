@@ -1,103 +1,172 @@
 const express = require("express");
 const cors = require("cors");
+const db = require("./db");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-let products = [];
-let categories = [];
-
 /* ---------------- PRODUCTS ---------------- */
 
 /* ADD */
 app.post("/api/products", (req, res) => {
-  const newProduct = { id: Date.now(), ...req.body };
-  products.push(newProduct);
-  res.json(newProduct);
+  const { name, price, category, image, description } = req.body;
+
+  if (!name || !price) {
+    return res.status(400).json({ message: "Name & Price required" });
+  }
+
+  const sql = `
+    INSERT INTO products (name, price, category, image, description)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(sql, [name, price, category, image, description], (err, result) => {
+    if (err) return res.status(500).json(err);
+
+    res.json({ id: result.insertId, name, price, category, image, description });
+  });
 });
 
 /* GET */
 app.get("/api/products", (req, res) => {
-  res.json(products);
+  db.query("SELECT * FROM products ORDER BY id DESC", (err, result) => {
+    if (err) return res.status(500).json(err);
+    res.json(result);
+  });
 });
 
 /* UPDATE */
 app.put("/api/products/:id", (req, res) => {
-  const id = Number(req.params.id);
+  const { id } = req.params;
+  const { name, price, category, image, description } = req.body;
 
-  const index = products.findIndex(p => p.id === id);
+  const sql = `
+    UPDATE products 
+    SET name=?, price=?, category=?, image=?, description=? 
+    WHERE id=?
+  `;
 
-  if (index === -1) {
-    return res.status(404).json({ message: "Product not found" });
-  }
+  db.query(sql, [name, price, category, image, description, id], (err) => {
+    if (err) return res.status(500).json(err);
 
-  products[index] = { ...products[index], ...req.body };
-
-  res.json(products[index]);
+    res.json({ message: "Updated" });
+  });
 });
 
 /* DELETE */
 app.delete("/api/products/:id", (req, res) => {
-  const id = Number(req.params.id);
-  products = products.filter(p => p.id !== id);
-  res.json({ message: "Deleted" });
+  db.query("DELETE FROM products WHERE id=?", [req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+
+    res.json({ message: "Deleted" });
+  });
 });
 
 /* ---------------- CATEGORIES ---------------- */
 
-/* ADD CATEGORY */
+/* ADD */
 app.post("/api/categories", (req, res) => {
-  const newCategory = { id: Date.now(), name: req.body.name };
-  categories.push(newCategory);
-  res.json(newCategory);
-});
+  const { name } = req.body;
 
-/* GET CATEGORY */
-app.get("/api/categories", (req, res) => {
-  res.json(categories);
-});
-
-/* DELETE CATEGORY */
-app.delete("/api/categories/:id", (req, res) => {
-  const id = Number(req.params.id);
-  categories = categories.filter(c => c.id !== id);
-  res.json({ message: "Deleted" });
-});
-let orders = [];
-
-/* CREATE ORDER (FAKE USER SIDE) */
-app.post("/api/orders", (req, res) => {
-  const newOrder = {
-    id: Date.now(),
-    customer: req.body.customer || "Guest",
-    amount: req.body.amount,
-    status: "Pending",
-  };
-
-  orders.push(newOrder);
-  res.json(newOrder);
-});
-
-/* GET ORDERS */
-app.get("/api/orders", (req, res) => {
-  res.json(orders);
-});
-
-/* UPDATE PAYMENT STATUS */
-app.put("/api/orders/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  const order = orders.find(o => o.id === id);
-
-  if (!order) {
-    return res.status(404).json({ message: "Order not found" });
+  if (!name) {
+    return res.status(400).json({ message: "Category name required" });
   }
 
-  order.status = req.body.status;
+  db.query("INSERT INTO categories (name) VALUES (?)", [name], (err, result) => {
+    if (err) return res.status(500).json(err);
 
-  res.json(order);
+    res.json({ id: result.insertId, name });
+  });
+});
+
+/* GET */
+app.get("/api/categories", (req, res) => {
+  db.query("SELECT * FROM categories ORDER BY id DESC", (err, result) => {
+    if (err) return res.status(500).json(err);
+    res.json(result);
+  });
+});
+
+/* DELETE */
+app.delete("/api/categories/:id", (req, res) => {
+  db.query("DELETE FROM categories WHERE id=?", [req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+
+    res.json({ message: "Deleted" });
+  });
+});
+
+/* ---------------- ORDERS ---------------- */
+
+/* CREATE */
+app.post("/api/orders", (req, res) => {
+  const { customer, product_name, quantity, amount, payment_method } = req.body;
+
+  if (!product_name || !amount) {
+    return res.status(400).json({ message: "Product & amount required" });
+  }
+
+  const sql = `
+    INSERT INTO orders 
+    (customer, product_name, quantity, amount, status, payment_method) 
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    sql,
+    [
+      customer || "Guest",
+      product_name,
+      quantity || 1,
+      amount,
+      "Pending",
+      payment_method || "COD",
+    ],
+    (err, result) => {
+      if (err) return res.status(500).json(err);
+
+      res.json({
+        id: result.insertId,
+        customer,
+        product_name,
+        quantity,
+        amount,
+        status: "Pending",
+        payment_method,
+      });
+    }
+  );
+});
+
+/* GET */
+app.get("/api/orders", (req, res) => {
+  db.query("SELECT * FROM orders ORDER BY date DESC", (err, result) => {
+    if (err) return res.status(500).json(err);
+    res.json(result);
+  });
+});
+
+/* UPDATE STATUS */
+app.put("/api/orders/:id", (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  db.query("UPDATE orders SET status=? WHERE id=?", [status, id], (err) => {
+    if (err) return res.status(500).json(err);
+
+    res.json({ message: "Status Updated" });
+  });
+});
+
+/* DELETE */
+app.delete("/api/orders/:id", (req, res) => {
+  db.query("DELETE FROM orders WHERE id=?", [req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+
+    res.json({ message: "Order Deleted" });
+  });
 });
 
 /* ---------------- SERVER ---------------- */
